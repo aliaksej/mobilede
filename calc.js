@@ -4,6 +4,7 @@ function eur2usd (eur) {
   return eur * EUR2USD;
 }
 
+
 // get tax rate (EUR)
 function getTaxRate (engineVol) {
   var tax = 1.5;
