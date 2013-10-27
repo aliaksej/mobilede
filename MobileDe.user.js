@@ -1,19 +1,85 @@
-﻿$('.pricePrimaryCountryOfSale.priceGross').click(function (e) {
-var price = e.target.innerText.replace(/[^\d]/g, '');
-var volMatches = $('.titleContainer').text().match(/\s+(\d[.,]\d)\s+/);
-var volEl = $('.technicalDetailsColumn dd:contains("см")');
-var engineVol;
-if (volEl.length > 0) {
-	engineVol = volEl.text().replace(/[^\d]/g, '');
+﻿var carsList = $('.search-results'),
+    isCarsList = carsList.length > 0,
+    carView = $('.contentBox:has(.vehicleTitle)'),
+    isCarView = carView.length === 1,
+    cars,
+    PRICE_SELECTOR = '.pricePrimaryCountryOfSale.priceGross',
+    TITLE_SELECTOR = '.titleContainer, .listEntryTitle',
+    ENGINE_VOLUME_SELECTOR = '.technicalDetailsColumn dd:contains("см"), .technicalDetailsColumn dd:contains("cm")',
+    VOLUME_REGEXP = /\s+(\d[.,]\d)\w+\s+/;
+
+if (isCarsList) {
+    cars = $('.listEntry');
 }
-else if (volMatches) {
-	engineVol = volMatches[1].replace(',', '.');
+else if (isCarView) {
+    cars = $('.vehicleTitle').parents('.contentBox'); // container of all car information
 }
-else {
-	engineVol = prompt('Enter engine volume', '1.6').replace(',', '.');
+
+function processCars() {
+    if (!cars) return;
+    cars.each(function (index, car) {
+        car = $(car);
+        var price = getPrice(car),
+            vol = getEngineVolume(car),
+            totalPrice = unsafeWindow.calculateTotalPrice(parseInt(price, 10), parseInt(vol, 10));
+        if (vol && price) {
+            car.find(PRICE_SELECTOR).after("<div style='color:red; font-size: 26px;margin: 10px 10px 10px 0;'>" + totalPrice + " USD</div>");
+        }
+        car.on('click', PRICE_SELECTOR, onPriceClick);
+    });
 }
-if (engineVol.indexOf('.')!== -1) {
-	engineVol = engineVol * 1000;
+
+function getPrice (context) {
+    var price = context.find(PRICE_SELECTOR).text().replace(/[^\d]/g, '');
+    return price;
 }
-alert('Цена: ' + unsafeWindow.calculateTotalPrice(parseInt(price), parseInt(engineVol)));
-})
+
+function getEngineVolume (context, ask) {
+    // trying to find volume param
+    var volEl = context.find(ENGINE_VOLUME_SELECTOR),
+        titleMatches = $.trim(context.find(TITLE_SELECTOR).text() || "").match(VOLUME_REGEXP),
+        volume;
+
+    if (volEl.length > 0) {
+        volume = volEl.text().replace(/[^\d]/g, '');
+    }
+    else if (titleMatches) { // search for volume in title
+        volume = titleMatches[1].replace(',', '.');
+    } else if (ask) {
+        volume = prompt('Enter engine volume', '1.6').replace(',', '.');
+    }
+
+    if (volume && volume.indexOf('.')!== -1) {
+        volume = volume * 1000;
+    }
+
+    return volume;
+}
+
+
+processCars();
+
+
+function onPriceClick (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var price = e.target.innerText.replace(/[^\d]/g, '');
+    var volMatches = $.trim($('.titleContainer').text() || "").match(VOLUME_REGEXP);
+    var volEl = $('.technicalDetailsColumn dd:contains("см")');
+    var engineVol;
+    if (volEl.length > 0) {
+        engineVol = volEl.text().replace(/[^\d]/g, '');
+    }
+    else if (volMatches) {
+        engineVol = volMatches[1].replace(',', '.');
+    }
+    else {
+        engineVol = prompt('Enter engine volume', '1.6').replace(',', '.');
+    }
+    if (engineVol.indexOf('.')!== -1) {
+        engineVol = engineVol * 1000;
+    }
+    alert('Цена: ' + unsafeWindow.calculateTotalPrice(parseInt(price), parseInt(engineVol)));
+}
+
+$('.pricePrimaryCountryOfSale.priceGross').click(onPriceClick);
