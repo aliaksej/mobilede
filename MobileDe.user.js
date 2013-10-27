@@ -4,9 +4,9 @@
     isCarView = carView.length === 1,
     cars,
     PRICE_SELECTOR = '.pricePrimaryCountryOfSale.priceGross',
-    TITLE_SELECTOR = '.titleContainer, .listEntryTitle',
+    TITLE_SELECTOR = '.titleContainer, .listEntryTitle, .detailsViewLink',
     ENGINE_VOLUME_SELECTOR = '.technicalDetailsColumn dd:contains("см"), .technicalDetailsColumn dd:contains("cm")',
-    VOLUME_REGEXP = /\s+(\d[.,]\d)\w+\s+/;
+    VOLUME_REGEXP = /\s+(\d[.,]\d)\w*\s+/;
 
 if (isCarsList) {
     cars = $('.listEntry');
@@ -19,11 +19,11 @@ function processCars() {
     if (!cars) return;
     cars.each(function (index, car) {
         car = $(car);
-        var price = getPrice(car),
-            vol = getEngineVolume(car),
-            totalPrice = unsafeWindow.calculateTotalPrice(parseInt(price, 10), parseInt(vol, 10));
+        var price = getPrice(car);
+        var vol = getEngineVolume(car);
+       	var totalPrice = unsafeWindow.calculateTotalPrice(parseInt(price, 10), parseInt(vol, 10));
         if (vol && price) {
-            car.find(PRICE_SELECTOR).after("<div style='color:red; font-size: 26px;margin: 10px 10px 10px 0;'>" + totalPrice + " USD</div>");
+            car.find(PRICE_SELECTOR).after("<div style='color:red; font-size: 16px;margin: 10px 10px 10px 0;'>" + totalPrice + " USD</div>");
         }
         car.on('click', PRICE_SELECTOR, onPriceClick);
     });
@@ -36,9 +36,9 @@ function getPrice (context) {
 
 function getEngineVolume (context, ask) {
     // trying to find volume param
-    var volEl = context.find(ENGINE_VOLUME_SELECTOR),
-        titleMatches = $.trim(context.find(TITLE_SELECTOR).text() || "").match(VOLUME_REGEXP),
-        volume;
+    var volEl = context.find(ENGINE_VOLUME_SELECTOR);
+    var titleMatches = $.trim(context.find(TITLE_SELECTOR).text() || "").match(VOLUME_REGEXP);
+    var volume;
 
     if (volEl.length > 0) {
         volume = volEl.text().replace(/[^\d]/g, '');
