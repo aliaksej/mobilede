@@ -3,14 +3,17 @@
     "content_scripts": [ {
         "exclude_globs":    [  ],
         "include_globs":    [ "*" ],
-        "js":               [ "jquery.js", "calc.js", "MobileDe.user.js" ],
+        "js":               [ "jquery.js", "calc.js", "MobileDe.user.js", "AutoScout24.user.js" ],
         "matches":          [   "http://suchen.mobile.de/*",
-                                "https://suchen.mobile.de/*"
+                                "https://suchen.mobile.de/*",
+				"http://*autoscout24.de/*",
+				"http://www.autoscout24.ru/*",
+				"http://www.autoscout24.com/*"
                             ],
         "run_at": "document_end"
     } ],
     "converted_from_user_script": true,
     "description":  "",
-    "name":         "MobileDe",
+    "name":         "CarsTaxesBelarus",
     "version":      "1"
 }

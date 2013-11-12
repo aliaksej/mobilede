@@ -1,4 +1,5 @@
-﻿var carsList = $('.search-results'),
+﻿if (location.href.indexOf('mobile.de') >= 0) {
+var carsList = $('.search-results'),
     isCarsList = carsList.length > 0,
     carView = $('.contentBox:has(.vehicleTitle)'),
     isCarView = carView.length === 1,
@@ -83,3 +84,4 @@ function onPriceClick (e) {
 }
 
 $('.pricePrimaryCountryOfSale.priceGross').click(onPriceClick);
+}
