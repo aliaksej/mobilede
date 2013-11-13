@@ -10,5 +10,5 @@ To enable automatic price calculation:
 * Extension becomes available on your local machine (because I don't have chrome developer account)
 
 
-# CALCULATION FOR CARS 3-5 YEARS OLD
+# CALCULATION FOR 3-5 YEARS OLD CARS
 
