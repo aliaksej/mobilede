@@ -9,3 +9,6 @@ To enable automatic price calculation:
 * Go to chrome://extensions/ and press "Load unpacked extension..." and select extension folder on your computer.
 * Extension becomes available on your local machine (because I don't have chrome developer account)
 
+
+# CALCULATION FOR CARS 3-5 YEARS OLD
+
